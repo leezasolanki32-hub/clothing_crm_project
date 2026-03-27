@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import bg from "../assets/loginbg.jpg.jpeg";
 
 function Login() {
+
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -14,24 +15,21 @@ function Login() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
-      alert("User not found ❌");
+      alert("Please Register First ❌");
       return;
     }
 
     if (
-      (username.trim() === user.email ||
-        username.trim() === user.phone) &&
-      password.trim() === user.password
+      (username === user.email || username === user.phone) &&
+      password === user.password
     ) {
-      // ✅ Save login status
       localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("role", "user");
 
-      alert("Login Successful ✅");
-
-      // ✅ Redirect to dashboard
+      alert("User Login Successful ✅");
       navigate("/dashboard");
     } else {
-      alert("Invalid login ❌");
+      alert("Invalid Login ❌");
     }
   };
 
@@ -40,12 +38,10 @@ function Login() {
       <div style={styles.card}>
         <h2>Login</h2>
 
-        <form onSubmit={handleLogin} autoComplete="off">
-
+        <form onSubmit={handleLogin}>
           <input
             type="text"
             placeholder="Email or Phone"
-            autoComplete="off"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             style={styles.input}
@@ -55,7 +51,6 @@ function Login() {
           <input
             type="password"
             placeholder="Password"
-            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
@@ -63,9 +58,18 @@ function Login() {
           />
 
           <button type="submit" style={styles.button}>
-            Login
+            User Login
           </button>
 
+          <p style={styles.or}>OR</p>
+
+          <button
+            type="button"
+            style={styles.adminBtn}
+            onClick={() => navigate("/admin-login")}
+          >
+            Login as Admin
+          </button>
         </form>
       </div>
     </div>
@@ -75,10 +79,8 @@ function Login() {
 const styles = {
   container: {
     minHeight: "100vh",
-    width: "100%",
     backgroundSize: "cover",
     backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
@@ -104,8 +106,20 @@ const styles = {
     color: "white",
     border: "none",
     borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "16px"
+    cursor: "pointer"
+  },
+  adminBtn: {
+    width: "100%",
+    padding: "10px",
+    background: "#ff758c",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer"
+  },
+  or: {
+    textAlign: "center",
+    margin: "10px 0"
   }
 };
 
