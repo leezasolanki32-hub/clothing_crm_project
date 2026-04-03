@@ -1,94 +1,100 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+import "../styles/dashboard.css";
 
 function AdminDashboard() {
 
-  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
-  const logout = () => {
-    localStorage.clear();
-    navigate("/");
-  };
+  useEffect(() => {
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
+    // Check Admin Login
+    const admin = localStorage.getItem("admin");
+
+    if (!admin) {
+      window.location.href = "/login";
+    }
+
+    // Dummy Data (Later connect backend)
+    setUsers([
+      { id: 1, name: "Leeza", email: "leeza@gmail.com" },
+      { id: 2, name: "Rahul", email: "rahul@gmail.com" }
+    ]);
+
+    setCustomers([
+      { id: 1, name: "Priya", city: "Ahmedabad" },
+      { id: 2, name: "Karan", city: "Surat" }
+    ]);
+
+  }, []);
 
   return (
-    <div style={styles.container}>
+    <div className="dashboard">
 
-      {/* HEADER */}
-      <div style={styles.header}>
-        <h2>Admin Dashboard 👑</h2>
-        <button onClick={logout} style={styles.logout}>Logout</button>
-      </div>
+      <Sidebar />
 
-      {/* USER TABLE */}
-      <div style={styles.content}>
-        <h3>Registered Users</h3>
+      <div className="main">
+        <Topbar />
 
-        {users.length === 0 ? (
-          <p>No users found</p>
-        ) : (
-          <table style={styles.table}>
+        <h2>Admin Dashboard</h2>
+
+        {/* USERS TABLE */}
+        <div className="card">
+          <h3>All Users</h3>
+
+          <table>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Phone</th>
               </tr>
             </thead>
 
             <tbody>
-              {users.map((user, index) => (
-                <tr key={index}>
+              {users.map(user => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
-                  <td>{user.phone}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
+        </div>
+
+        {/* CUSTOMERS TABLE */}
+        <div className="card">
+          <h3>All Customers</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>City</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {customers.map(customer => (
+                <tr key={customer.id}>
+                  <td>{customer.id}</td>
+                  <td>{customer.name}</td>
+                  <td>{customer.city}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+        </div>
 
       </div>
 
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    background: "#f4f6f8",
-    fontFamily: "Arial"
-  },
-
-  header: {
-    background: "#ff758c",
-    color: "white",
-    padding: "15px 30px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-
-  logout: {
-    padding: "8px 15px",
-    border: "none",
-    background: "white",
-    color: "#ff758c",
-    borderRadius: "5px",
-    cursor: "pointer"
-  },
-
-  content: {
-    padding: "30px"
-  },
-
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    background: "white"
-  }
-};
 
 export default AdminDashboard;
